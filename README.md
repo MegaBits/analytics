@@ -2,4 +2,7 @@ This repo is to hold all the pieces required aggregate the DynamoDB records for 
 
 
 
-I think the python libraries are dependent on `boto` and that's it for now (for the `collect.py` script) 
+I think the python libraries are dependent on `boto` (may need to make a config file? google it) and that's it for now (for the `collect.py` script) 
+
+
+Clone this into an EC2 instance and do `sudo yum install python-pip` for pip on EC2. You'll also need to install the AWS CLI and do `aws config` to set your credentials. 
