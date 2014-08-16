@@ -1,0 +1,72 @@
+{
+  "objects": [
+    {
+      "id": "EmrActivityId_eVpF1",
+      "input": {
+        "ref": "DynamoDBDataNodeId_or39Y"
+      },
+      "myDynamoDBReadThroughputRatio": "0.25",
+      "name": "MyExportJob",
+      "runsOn": {
+        "ref": "EmrClusterId_ibbO4"
+      },
+      "maximumRetries": "0",
+      "attemptTimeout": "24 Hours",
+      "type": "EmrActivity",
+      "output": {
+        "ref": "S3DataNodeId_oZMFj"
+      },
+      "step": "s3://elasticmapreduce/libs/script-runner/script-runner.jar,s3://elasticmapreduce/libs/hive/hive-script,--run-hive-script,--hive-versions,latest,--args,-f,s3://elasticmapreduce/libs/hive/dynamodb/exportDynamoDBTableToS3,-d,DYNAMODB_INPUT_TABLE=#{input.tableName},-d,S3_OUTPUT_BUCKET=#{output.directoryPath}/#{format(@scheduledStartTime,'YYYY-MM-dd_hh.mm')},-d,DYNAMODB_READ_PERCENT=#{myDynamoDBReadThroughputRatio},-d,DYNAMODB_ENDPOINT=dynamodb.us-east-1.amazonaws.com"
+    },
+    {
+      "id": "EmrClusterId_ibbO4",
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "masterInstanceType": "m1.small",
+      "coreInstanceType": "m1.xlarge",
+      "enableDebugging": "false",
+      "installHive": "latest",
+      "name": "ExportCluster",
+      "coreInstanceCount": "1",
+      "type": "EmrCluster"
+    },
+    {
+      "id": "S3DataNodeId_oZMFj",
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "directoryPath": "s3://alakazam",
+      "name": "MyS3Data",
+      "type": "S3DataNode"
+    },
+    {
+      "id": "Default",
+      "scheduleType": "CRON",
+      "failureAndRerunMode": "CASCADE",
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "name": "Default",
+      "role": "DataPipelineDefaultRole",
+      "resourceRole": "DataPipelineDefaultResourceRole"
+    },
+    {
+      "id": "DefaultSchedule",
+      "occurrences": "1",
+      "name": "RunOnce",
+      "startAt": "FIRST_ACTIVATION_DATE_TIME",
+      "type": "Schedule",
+      "period": "1 Day"
+    },
+    {
+      "id": "DynamoDBDataNodeId_or39Y",
+      "schedule": {
+        "ref": "DefaultSchedule"
+      },
+      "tableName": "alakazam",
+      "name": "MyDynamoData",
+      "type": "DynamoDBDataNode"
+    }
+  ]
+}
