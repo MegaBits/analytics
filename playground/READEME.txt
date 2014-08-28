@@ -1,0 +1,6 @@
+
+
+
+I think it goes parse > decode > sort....I can't remember now
+
+Decode is not currently implemented...trying to figure out if it is necessary to decode the values before doing analysis,since I should probably just type chek in the analysis anyway...
