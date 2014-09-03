@@ -1,6 +1,6 @@
 aws datapipeline create-pipeline --name alakazam --unique-id 12345
 
-aws datapipeline put-pipeline-definition --pipeline-id df-01505243PVGRDX0N0O6W --pipeline-definition ./datapipeline.json
+aws datapipeline put-pipeline-definition --pipeline-id df-01505243PVGRDX0N0O6W --pipeline-definition file://./datapipeline.json
 
 aws datapipeline activate-pipeline --pipeline-id df-01505243PVGRDX0N0O6W
 
