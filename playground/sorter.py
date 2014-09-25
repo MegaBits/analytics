@@ -24,7 +24,18 @@ for event in set(eventTypes):
   sortedRecords[event] = []
 
 for record in parse.db:
-  sortedRecords[record['event']['s']].append(record)
+  parsedRecord = {}
+  print record
+  for k in record.keys():
+   if 's' in record[k]:
+    parsedRecord[k] = record[k]['s']
+   if 'n' in record[k]:
+    if '.' in record[k]['n']:
+     parsedRecord[k] = float(record[k]['n'])
+    else:
+     parsedRecord[k] = int(record[k]['n'])
+  sortedRecords[record['event']['s']].append(parsedRecord)
+  
 
 
 
