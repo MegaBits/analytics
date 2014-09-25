@@ -25,7 +25,7 @@ for event in set(eventTypes):
 
 for record in parse.db:
   parsedRecord = {}
-  print record
+  #print record
   for k in record.keys():
    if 's' in record[k]:
     parsedRecord[k] = record[k]['s']
