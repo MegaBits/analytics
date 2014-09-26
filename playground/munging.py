@@ -15,6 +15,15 @@ def getLocations(records, clearNulls=True):
  else:
   raise TypeError("parameter \'records\' is not type \'list\'!")
 
+def getTimestampedLocations(records, clearNulls=True):
+ if type(records) is type(list()):
+  if clearNulls:
+   return [(i['timestamp'], [i['x'], i['y']]) for i in records if 'x' in i and 'y' in i and 'timestamp' in i and i['x'] is not 0 and i['y'] is not 0 and i['timestamp'] is not 0]
+  else:
+   return [(i['timestamp'], [i['x'], i['y']]) for i in records if 'x' in i and 'y' in i and 'timestamp' in i]
+ else:
+  raise TypeError("parameter \'records\' is not type \'list\'!") 
+
 def writeLocationsToCsv(records, filename, clearNulls=True):
  if type(records) is type(list()):
   #if clearNulls:
@@ -45,3 +54,5 @@ def num2deg(xtile, ytile, zoom):
  lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
  lat_deg = math.degrees(lat_rad)
  return (lat_deg, lon_deg)
+
+
