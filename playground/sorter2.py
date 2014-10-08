@@ -1,5 +1,5 @@
 
-import parse
+import parse2
 import math
 import time
 
@@ -8,7 +8,7 @@ import time
 
 t1 = time.time()
 
-eventTypes = set([record['event']['s'] for record in parse.db])
+eventTypes = set([record['event']['s'] for record in parse2.records])
 
 t2 = time.time()
 
@@ -22,7 +22,7 @@ for event in set(eventTypes):
 
 t1 = time.time()
 
-for record in parse.db:
+for record in parse2.records:
   parsedRecord = {}
   #print record
   for k in record.keys():
