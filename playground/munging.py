@@ -1,5 +1,3 @@
-
-
 import csv
 import math
 
@@ -54,5 +52,133 @@ def num2deg(xtile, ytile, zoom):
  lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
  lat_deg = math.degrees(lat_rad)
  return (lat_deg, lon_deg)
+
+
+
+
+#====
+# Version Filtering
+#==== 
+
+
+def onlyVersion(records, version):
+ filterRecords = {}
+ for l in records:
+  filterRecords[l] = []
+  for r in records[l]:
+   if 'clientVersion' in r:
+    if r['clientVersion'] == version:
+     filterRecords[l].append(r)
+ return filterRecords
+
+
+def atLeastVersion(records, release=0, major=0, minor=0, build=0):
+ raise(NotImplementedError, 'oh noes, the sky is fallingz')
+
+
+def upToVersion():
+ raise(NotImplementedError, 'SHITSHITSHIT')
+
+
+#====
+#  Time filtering
+#====
+
+# These are largely sfor LISTS, not dicts...get what you want in a list first then use these for time series analysis
+
+'''
+
+timeList = time.ctime(test[1]['timestamp']).replace('  ', ' ').split(' ')
+timeList[:3] + [i for i in timeList[3].split(':')] + timeList[4:]
+
+  >> ['Thu', 'Sep', '4', '03', '14', '00', '2014']
+
+0 = Day of week
+1 = Month
+2 = Day
+3 = Hour
+4 = Minute
+5 = Second
+6 = Year
+
+'''
+
+import time
+import calendar
+
+months = [i[1] for i in enumerate(calendar.month_abbr)]
+
+def timeSegments(record):
+ timeList = time.ctime(record['timestamp']).replace('  ', ' ').split(' ')
+ return timeList[:1] + [months.index(timeList[1])] + [int(timeList[2])]+ [int(i) for i in timeList[3].split(':')] + [int(timeList[4])]
+
+# Returns a dict in the form ["<int month>/<int year>"]["<int day>"], where each <int day> key is a list of records
+def groupByDay(records):
+ filteredRecords = {}
+ cleanRecords = [i for i in records if 'timestamp' in i]
+
+ if len(cleanRecords) is 0:
+  return
+ print(map(timeSegments, cleanRecords))
+ activeYears = set(i[6] for i in map(timeSegments, cleanRecords))
+
+ for year in activeYears:
+  filteredRecords[year] = {}
+  for i in range(1,13):
+   filteredRecords[year][i] = {}
+   daysInMonth = calendar.monthrange(int(year), i)[1]
+   for j in range(1, daysInMonth + 1):
+    filteredRecords[year][i][j] = []
+ 
+ for r in cleanRecords:
+  info = timeSegments(r)
+  filteredRecords[info[6]][info[1]][info[2]].append(r)
+ 
+ return filteredRecords 
+
+def groupByHour(records):
+ filteredRecords = {}
+ cleanRecords = [i for i in records if 'timestamp' in i]
+
+ if len(cleanRecords) is 0:
+  return
+
+ activeYears = set(i[6] for i in map(timeSegments, cleanRecords))
+
+ for year in activeYears:
+  filteredRecords[year] = {}
+  for i in range(1,13):
+   filteredRecords[year][i] = {}
+   daysInMonth = calendar.monthrange(int(year), i)[1]
+   for j in range(1, daysInMonth + 1):
+    filteredRecords[year][i][j] = {}
+    for k in range(0,25):
+     filteredRecords[year][i][j][k] = []
+
+ for r in cleanRecords:
+  info = timeSegments(r)
+  filteredRecords[info[6]][info[1]][info[2]][info[3]].append(r)
+ 
+ return filteredRecords
+
+def filterByDayForMonth(records, month, year):
+ raise(NotImplementedError, 'pls')
+ 
+def filterByHourForDay(records, day, month, year):
+ raise(NotImplementedError, 'pls')
+
+def filterByMinuteForHour(records, hour, day, month, year):
+ raise(NotImplementedError, 'pls')
+
+
+
+
+#====
+#  ID filtering
+#====
+
+
+def filterSortedRecordsByAnonymousId(records, playerId):
+ raise(NotImplementedError, 'pls')
 
 
