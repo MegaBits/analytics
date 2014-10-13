@@ -15,7 +15,7 @@ t2 = time.time()
 print(t2 - t1)
 
 sortedRecords = {}
-
+records = []
 
 for event in set(eventTypes):
   sortedRecords[event] = []
@@ -34,7 +34,7 @@ for record in parse2.records:
     else:
      parsedRecord[k] = int(record[k]['n'])
   sortedRecords[record['event']['s']].append(parsedRecord)
-  
+  records.append(parsedRecord)
 t2 = time.time()
 
 print(t2 - t1)
