@@ -113,6 +113,7 @@ def timeSegments(record):
  return timeList[:1] + [months.index(timeList[1])] + [int(timeList[2])]+ [int(i) for i in timeList[3].split(':')] + [int(timeList[4])]
 
 # Returns a dict in the form ["<int month>/<int year>"]["<int day>"], where each <int day> key is a list of records
+# Expects a list!
 def groupByDay(records):
  filteredRecords = {}
  cleanRecords = [i for i in records if 'timestamp' in i]
@@ -177,8 +178,70 @@ def filterByMinuteForHour(records, hour, day, month, year):
 #  ID filtering
 #====
 
+'''
 
-def filterSortedRecordsByAnonymousId(records, playerId):
- raise(NotImplementedError, 'pls')
+t = filter(lambda x, y='510D227E-FA74-4DC8-B1B5-F5653409E81D': x['anonymousId'] == y, test['locationInteraction'])
+
+'''
+
+#Expects dict
+#returns a list
+def getAllAnonymousIds(records, eventFilter=[]):
+ if len(eventFilter) is not 0:
+  raise(NotImplementedError, 'event type filtering options not available')
+
+ aggregateIds = []
+
+ for event in records:
+  aggregateIds += set([i['anonymousId'] for i in records[event]])
+ 
+ return set(aggregateIds)
+  
+
+#Expects a dict
+#Returns a list
+def filterByAnonymousId(records, playerId, timeSort=True, eventFilter=[]):
+ aggregateRecords = [] 
+
+ #If an event filter exists, check against it, else include everything
+ #This can be done better
+ if len(eventFilter) is not 0:
+  for event in records:
+   if event in eventFilter:
+    aggregateRecords += filter(lambda x,y=playerId: x['anonymousId'] == y, records[event])
+ else: 
+  for event in records:
+   aggregateRecords += filter(lambda x,y=playerId: x['anonymousId'] == y, records[event])
+ 
+ if timeSort:
+  aggregateRecords = sorted(aggregateRecords, key=lambda x: x['timestamp'])
+ 
+ return aggregateRecords
 
 
+#Consider including filtering by event type
+def groupByAnonymousId(records, timeSort=True, eventFilter=[]):
+ playerIds = getAllAnonymousIds(records)
+ playerIdGroups = {} 
+
+ for playerId in playerIds:
+  playerIdGroups[playerId] = []
+ 
+ #This can be done better
+ if len(eventFilter) is not 0:
+  for event in records:
+   if event in eventFilter:
+    for record in records[event]:
+     if 'anonymousId' in record:
+      playerIdGroups[record['anonymousId']].append(record)
+ else:
+  for event in records:
+   for record in records[event]:
+    if 'anonymousId' in record:
+     playerIdGroups[record['anonymousId']].append(record)
+ 
+ if timeSort:
+  for player in playerIdGroups:
+   playerIdGroups[player] = sorted(playerIdGroups[player], key=lambda x: x['timestamp'])
+
+ return playerIdGroups
