@@ -48,15 +48,16 @@ def boundLocationBySquare(records, lat1, lon1, lat2, lon2): # (lat1,lon1) -> top
 
 def recordsBoundedLocationBySquare(records, lat1, lon1, lat2, lon2):
  if type(records) is type(list()):
-  coords = [num2deg(i[0], i[1], 20) for i in records if i[0] is not 0 and i[1] is not 0]
+  coords = [(num2deg(i['x'], i['y'], 20), i) for i in records if i['x'] is not 0 and i['y'] is not 0]
   #print(len(coords))
   bounded = []
   for i in coords:
-   if i[1] > lat1 and i[0] > lon1 and i[1] < lat2 and i[0] < lon2:
-    bounded.append((record)
+   if i[0][1] > lat1 and i[0][0] > lon1 and i[0][1] < lat2 and i[0][0] < lon2:
+    bounded.append(i[1])
   return bounded
  else:
   raise TypeError("parameter \'records\' is not type \'list\'!")
+
 
 def num2deg(xtile, ytile, zoom):
  n = 2.0 ** zoom
