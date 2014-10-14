@@ -86,7 +86,23 @@ def onlyVersion(records, version):
 
 
 def atLeastVersion(records, release=0, major=0, minor=0, build=0):
- raise(NotImplementedError, 'oh noes, the sky is fallingz')
+ filteredRecords = []
+ cleanRecords = [i for i in records if 'clientVersion' in i]
+ versionThreshold = [release, major, minor, build] 
+
+ for record in cleanRecords:
+  recordVersion = [int(i) for i in record['clientVersion'].split('.')]
+
+  if len(recordVersion) == 3: #If there wasn't a build number for this record, add the default '0'
+   recordVersion = recordVersion + [0]
+
+  if len(recordVersion) is not 4: #If the version segment list isn't 4 at this point, its a bunk record. skip it
+   continue
+
+  if recordVersion[0] >= versionThreshold[0] and recordVersion[1] >= versionThreshold[1] and recordVersion[2] >= versionThreshold[2] and recordVersion[3] >= versionThreshold[3]:
+   filteredRecords.append(record)
+  
+ return filteredRecords
 
 
 def upToVersion():

@@ -40,13 +40,23 @@ t2 = time.time()
 print(t2 - t1)
 
 
+def sortRecords(recordList):
+ sortedRec = {}
+ events = set([record['event']['s'] for record in recordList])
 
-#for r in sortedRecords['locationInteraction']:
-#  print r
+ for event in set(events):
+  sortedRec[event] = []
 
-#print(sortedRecords)
-
-#if record['event']['s'] == 'locationInteraction':
-    
-##print set(eventTypes)
-
+ for record in recordList:
+  parsedRecord = {}
+  for k in record.keys():
+   if 's' in record[k]:
+    parsedRecord[k] = record[k]['s']
+   if 'n' in record[k]:
+    if '.' in record[k]['n']:
+     parsedRecord[k] = float(record[k]['n'])
+    else:
+     parsedRecord[k] = int(record[k]['n'])
+  sortedRec[record['event']['s']].append(parsedRecord)
+ 
+ return sortedRec
