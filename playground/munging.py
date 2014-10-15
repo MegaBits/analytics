@@ -115,12 +115,13 @@ def upToVersion():
 
 # These are largely sfor LISTS, not dicts...get what you want in a list first then use these for time series analysis
 
+import time
+import calendar
+
+months = [i[1] for i in enumerate(calendar.month_abbr)]
+
 '''
-
-timeList = time.ctime(test[1]['timestamp']).replace('  ', ' ').split(' ')
-timeList[:3] + [i for i in timeList[3].split(':')] + timeList[4:]
-
-  >> ['Thu', 'Sep', '4', '03', '14', '00', '2014']
+Time Segment Codex
 
 0 = Day of week
 1 = Month
@@ -129,13 +130,7 @@ timeList[:3] + [i for i in timeList[3].split(':')] + timeList[4:]
 4 = Minute
 5 = Second
 6 = Year
-
 '''
-
-import time
-import calendar
-
-months = [i[1] for i in enumerate(calendar.month_abbr)]
 
 def timeSegments(record):
  timeList = time.ctime(record['timestamp']).replace('  ', ' ').split(' ')
@@ -257,6 +252,7 @@ def groupByAnonymousId(records, timeSort=True, eventFilter=[]):
   playerIdGroups[playerId] = []
  
  #This can be done better
+ #Sorry for the christmas tree >.>
  if len(eventFilter) is not 0:
   for event in records:
    if event in eventFilter:
