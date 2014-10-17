@@ -66,7 +66,12 @@ def num2deg(xtile, ytile, zoom):
  lat_deg = math.degrees(lat_rad)
  return (lat_deg, lon_deg)
 
-
+def deg2num(lat_deg, lon_deg, zoom):
+ lat_rad = math.radians(lat_deg)
+ n = 2.0 ** zoom
+ xtile = int((lon_deg + 180.0) / 360.0 * n)
+ ytile = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+ return (xtile, ytile)
 
 
 #====
@@ -116,6 +121,7 @@ def upToVersion():
 # These are largely sfor LISTS, not dicts...get what you want in a list first then use these for time series analysis
 
 import time
+import datetime
 import calendar
 
 months = [i[1] for i in enumerate(calendar.month_abbr)]
@@ -144,7 +150,7 @@ def groupByDay(records):
 
  if len(cleanRecords) is 0:
   return
- print(map(timeSegments, cleanRecords))
+ #print(map(timeSegments, cleanRecords))
  activeYears = set(i[6] for i in map(timeSegments, cleanRecords))
 
  for year in activeYears:
@@ -185,6 +191,21 @@ def groupByHour(records):
   filteredRecords[info[6]][info[1]][info[2]][info[3]].append(r)
  
  return filteredRecords
+
+# Again, sticking with the date[] = [day,month,year] here
+def isPriorToDate(record, date):
+ dateTimestamp = time.mktime(datetime.datetime.strptime('/'.join([str(i) for i in date]), "%d/%m/%Y").timetuple())
+ return record['timestamp'] < dateTimestamp
+
+# WARNING - endDate IS EXCLUSIVE
+def isBetweenDates(record, startDate, endDate):
+ startDateTimestamp = time.mktime(datetime.datetime.strptime('/'.join([str(i) for i in startDate]), "%d/%m/%Y").timetuple())
+ endDateTimestamp = time.mktime(datetime.datetime.strptime('/'.join([str(i) for i in endDate]), "%d/%m/%Y").timetuple())
+
+ if startDateTimestamp == endDateTimestamp:
+  raise(ValueError, 'endDate cannot equal the startDate, endDate is exclusive')
+
+ return startDateTimestamp <= record['timestamp'] < endDateTimestamp
 
 def filterByDayForMonth(records, month, year):
  raise(NotImplementedError, 'pls')
