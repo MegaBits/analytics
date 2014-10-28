@@ -207,6 +207,9 @@ def isBetweenDates(record, startDate, endDate):
 
  return startDateTimestamp <= record['timestamp'] < endDateTimestamp
 
+
+
+
 def filterByDayForMonth(records, month, year):
  raise(NotImplementedError, 'pls')
  
@@ -290,4 +293,4 @@ def groupByAnonymousId(records, timeSort=True, eventFilter=[]):
   for player in playerIdGroups:
    playerIdGroups[player] = sorted(playerIdGroups[player], key=lambda x: x['timestamp'])
 
- return playerIdGroups
+ return playerIdGroups 
