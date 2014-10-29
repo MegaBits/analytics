@@ -51,11 +51,10 @@ def meanOverworldInteractionsPerDay(records, startDate, endDate):
       if munging.isBetweenDates({'timestamp':time.mktime(datetime.datetime.strptime('/'.join([str(i) for i in [d,m,y]]), "%d/%m/%Y").timetuple())}, startDate, endDate):
         totalsByDay.append(len(timeSortedSet[y][m][d]))
 
-  print(totalsByDay)
   mean = sum(totalsByDay)/len(totalsByDay)
   sqMeanDiffs = [math.pow(float(i) - mean, 2) for i in totalsByDay]
   stdev = math.sqrt(sum(sqMeanDiffs)/len(sqMeanDiffs))
-  return (mean, stdev)
+  return (totalsByDay, mean, stdev)
 
 def meanOverworldInteractionsPerHour(records, startDate, endDate):
   raise(NotImplementedError, 'sorry :(') 
@@ -63,4 +62,8 @@ def meanOverworldInteractionsPerHour(records, startDate, endDate):
 
 # Mean play radius from DATE_1 to DATE_2 per player[]
 
- 
+def playRadiusForAnonymousId(records, startDate, endDate):
+  focusSet = [i for i in filter(lambda x: munging.isBetweenDates(x, startDate, endDate), records) if 'anonymousId' in i and 'event' in i]
+  filteredFocusSet = filter(lambda x: x['event'] == 'locationInteraction', focusSet) 
+  return
+  
